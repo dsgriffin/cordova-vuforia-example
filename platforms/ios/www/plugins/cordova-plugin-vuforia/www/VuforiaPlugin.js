@@ -1,6 +1,6 @@
 cordova.define("cordova-plugin-vuforia.VuforiaPlugin", function(require, exports, module) {
 var VuforiaPlugin = {
-  startVuforia: function(imageFile ,imageTargets, overlayCopy, vuforiaLicense, imageFoundCallback){
+  startVuforia: function(imageFile ,imageTargets, overlayCopy, vuforiaLicense, imageFoundCallback, errorCallback){
 
     cordova.exec(
 
@@ -8,10 +8,11 @@ var VuforiaPlugin = {
       function callback(data) {
         imageFoundCallback(data);
       },
-      // Register the errorHandler
+      // Register the error handler
       function errorHandler(err) {
-        console.error('Vuforia Plugin Error:');
-        console.error(err);
+        if(typeof errorCallback !== 'undefined') {
+          errorCallback(err);
+        }
       },
       // Define what class to route messages to
       'VuforiaPlugin',

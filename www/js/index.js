@@ -46,6 +46,9 @@ var app = {
               function(data){
                   console.log(data);
                   alert("Image found: "+data.imageName);
+              },
+              function(data) {
+                  alert("Error: " + data);
               }
             );
         }

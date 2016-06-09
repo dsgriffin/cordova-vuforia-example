@@ -9,6 +9,10 @@
                 "parents": {
                     "/*": [
                         {
+                            "xml": "<feature name=\"Device\"><param name=\"android-package\" value=\"org.apache.cordova.device.Device\" /></feature>",
+                            "count": 1
+                        },
+                        {
                             "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
                         },
@@ -72,15 +76,28 @@
         }
     },
     "installed_plugins": {
+        "cordova-plugin-android-support-v4": {
+            "PACKAGE_NAME": "io.cordova.vuforiaplugin"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "io.cordova.vuforiaplugin"
+        },
         "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+            "PACKAGE_NAME": "io.cordova.vuforiaplugin"
         },
         "cordova-plugin-vuforia": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
+            "PACKAGE_NAME": "io.cordova.vuforiaplugin"
         }
     },
     "dependent_plugins": {},
     "modules": [
+        {
+            "file": "plugins/cordova-plugin-device/www/device.js",
+            "id": "cordova-plugin-device.device",
+            "clobbers": [
+                "device"
+            ]
+        },
         {
             "file": "plugins/cordova-plugin-vuforia/www/VuforiaPlugin.js",
             "id": "cordova-plugin-vuforia.VuforiaPlugin",
@@ -90,7 +107,9 @@
         }
     ],
     "plugin_metadata": {
+        "cordova-plugin-android-support-v4": "21.0.1",
+        "cordova-plugin-device": "1.1.2",
         "cordova-plugin-whitelist": "1.2.2",
-        "cordova-plugin-vuforia": "1.1.1"
+        "cordova-plugin-vuforia": "2.0.0"
     }
 }
