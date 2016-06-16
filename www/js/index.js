@@ -37,21 +37,55 @@ var app = {
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
-        document.getElementById('start-vuforia').onclick = function() {
-            navigator.VuforiaPlugin.startVuforia(
-              'www/targets/StonesAndChips.xml',
-              [ 'stones', 'chips' ],
-              'Point your camera at a test image...',
-              'YOUR_VUFORIA_KEY',
-              function(data){
-                  console.log(data);
-                  alert("Image found: "+data.imageName);
-              },
-              function(data) {
-                  alert("Error: " + data);
-              }
-            );
+        document.getElementById('start-vuforia').onclick = function () {
+            app.startVuforia();
+        };
+
+        document.getElementById('start-and-stop-vuforia').onclick = function () {
+            app.startVuforia();
+
+            console.log('Starting timer...');
+
+            // Wait for a timeout, then automatically stop Vuforia
+            setTimeout(function(){
+                app.stopVuforia();
+            }, 5000);
+        };
+
+        document.getElementById('stop-vuforia').onclick = function () {
+            app.stopVuforia();
         }
+    },
+    // Start the Vuforia plugin
+    startVuforia: function(){
+        navigator.VuforiaPlugin.startVuforia(
+            'www/targets/StonesAndChips.xml',
+            [ 'stones', 'chips' ],
+            'Point your camera at a test image...',
+            'YOUR_VUFORIA_KEY',
+            function(data){
+                console.log(data);
+                alert("Image found: "+data.imageName);
+            },
+            function(data) {
+                alert("Error: " + data);
+            }
+        );
+    },
+    // Stop the Vuforia plugin
+    stopVuforia: function(){
+        navigator.VuforiaPlugin.stopVuforia(function (data) {
+            console.log(data);
+
+            if (data.success == 'true') {
+                alert('TOO SLOW! You took too long to find an image.');
+            } else {
+                alert('Couldn\'t stop Vuforia\n'+data.message);
+            }
+        }, function (data) {
+            console.log("Error stopping Vuforia:");
+            console.log(data);
+        });
     }
 };
 

@@ -5,7 +5,7 @@ module.exports = function(context) {
     let cwd = process.cwd();
     let fs = require('fs');
     let path = require('path');
-    let xcodeInfos = require('./xcode_infos.json');
+    let hookData = require('./hook_data.json');
 
     // Using the ConfigParser from Cordova to get the project's name.
     let cordova_util = context.requireCordovaModule("cordova-lib/src/cordova/util");
@@ -14,13 +14,14 @@ module.exports = function(context) {
     let cordovaConfig = new ConfigParser(cordova_util.projectConfig(projectRoot));
     let projectName =  cordovaConfig.doc.findtext('./name');
 
-    console.log('Vuforia BeforePluginUninstall.js, attempting to modify build.xcconfig');
-
     let xcConfigBuildFilePath = path.join(cwd, 'platforms', 'ios', 'cordova', 'build.xcconfig');
+
+    console.log('Vuforia BeforePluginUninstall.js, attempting to modify build.xcconfig');
 
     try {
       let xcConfigBuildFileExists = fs.accessSync(xcConfigBuildFilePath);
-    } catch(e) {
+    }
+    catch(e) {
       console.log('Could not locate build.xcconfig.');
       return;
     }
@@ -42,7 +43,7 @@ module.exports = function(context) {
     }
 
 
-    let paths = xcodeInfos.headerPaths;
+    let paths = hookData.headerPaths;
 
     for(let actualPath of paths){
         if (lines[headerSearchPathLineNumber].indexOf(actualPath) === -1) {
@@ -68,9 +69,9 @@ module.exports = function(context) {
     let appDelegateFilePath = path.join(cwd, 'platforms', 'ios', projectName, 'Classes', 'AppDelegate.m');
 
     // Ugly file modification but does the job.
-    let oldMethod = xcodeInfos.methodToReplace;
+    let oldMethod = hookData.methodToReplace;
 
-    let newMethod = xcodeInfos.replaceMethod;
+    let newMethod = hookData.replaceMethod;
 
     try {
       let appDelegateFileExists = fs.accessSync(appDelegateFilePath);
@@ -96,4 +97,4 @@ module.exports = function(context) {
             console.log("Didn't find the code to modify");
         }
     }
-}
+};
