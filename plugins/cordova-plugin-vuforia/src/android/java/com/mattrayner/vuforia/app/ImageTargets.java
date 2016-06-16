@@ -15,6 +15,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.BroadcastReceiver;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -34,6 +36,7 @@ import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 //import android.R;
 //import com.example.hello.R;
@@ -53,6 +56,8 @@ import com.mattrayner.vuforia.app.ApplicationSession;
 import com.mattrayner.vuforia.app.utils.LoadingDialogHandler;
 import com.mattrayner.vuforia.app.utils.ApplicationGLView;
 import com.mattrayner.vuforia.app.utils.Texture;
+
+import com.mattrayner.vuforia.VuforiaPlugin;
 
 public class ImageTargets extends Activity implements ApplicationControl
 {
@@ -87,6 +92,8 @@ public class ImageTargets extends Activity implements ApplicationControl
 
     private RelativeLayout mUILayout;
 
+    private ActionReceiver vuforiaActionReceiver;
+
     LoadingDialogHandler loadingDialogHandler = new LoadingDialogHandler(this);
 
     // Alert Dialog used to display SDK errors
@@ -102,6 +109,19 @@ public class ImageTargets extends Activity implements ApplicationControl
 
     // Vuforia license key
     String mLicenseKey;
+
+    private class ActionReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context ctx, Intent intent) {
+            String receivedAction = intent.getExtras().getString(VuforiaPlugin.PLUGIN_ACTION);
+
+            if (receivedAction.equals(VuforiaPlugin.DISMISS_ACTION)) {
+                onBackPressed();
+            }
+        }
+    }
+
 
     // Called when the activity first starts or the user navigates back to an
     // activity.
@@ -139,7 +159,6 @@ public class ImageTargets extends Activity implements ApplicationControl
         String target_file = intent.getStringExtra("IMAGE_TARGET_FILE");
         mTargets = intent.getStringExtra("IMAGE_TARGETS");
         mOverlayMessage = intent.getStringExtra("OVERLAY_TEXT");
-
         startLoadingAnimation();
 
         Log.d(LOGTAG, "MRAY :: VUFORIA RECEIVED FILE: " + target_file);
@@ -189,6 +208,32 @@ public class ImageTargets extends Activity implements ApplicationControl
 
             return true;
         }
+    }
+
+
+    @Override
+    protected void onStart()
+    {
+        if (vuforiaActionReceiver == null) {
+            vuforiaActionReceiver = new ActionReceiver();
+        }
+
+        IntentFilter intentFilter = new IntentFilter(VuforiaPlugin.PLUGIN_ACTION);
+        registerReceiver(vuforiaActionReceiver, intentFilter);
+
+        Log.d(LOGTAG, "onStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop()
+    {
+        if (vuforiaActionReceiver != null) {
+            unregisterReceiver(vuforiaActionReceiver);
+        }
+        Log.d(LOGTAG, "onStop");
+        super.onStop();
+
     }
 
     // Called when the activity will start interacting with the user.
@@ -335,11 +380,17 @@ public class ImageTargets extends Activity implements ApplicationControl
         // Gets a reference to the overlay text
         TextView overlayText = (TextView) mUILayout.findViewById(resources.getIdentifier("overlay_message", "id", package_name));
 
-        Log.d(LOGTAG, "Overlay Text: "+mOverlayMessage);
+        if(mOverlayMessage == null){
+            Log.d(LOGTAG, "Hiding the Overlay TextView and the ImageView");
+            overlayText.setVisibility(View.GONE);
+            ImageView overlayImage = (ImageView) mUILayout.findViewById(resources.getIdentifier("imageView", "id", package_name));
+            overlayImage.setVisibility(View.GONE);
+        }else{
+            Log.d(LOGTAG, "Overlay Text: "+mOverlayMessage);
 
-        // Updates the overlay message with the text passed-in
-        overlayText.setText( mOverlayMessage );
-
+            // Updates the overlay message with the text passed-in
+            overlayText.setText( mOverlayMessage );
+        }
         // Adds the inflated layout to the view
         addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT,
             LayoutParams.MATCH_PARENT));

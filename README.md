@@ -5,6 +5,7 @@ A simple example Cordova project using [cordova-plugin-vuforia](https://github.c
 ### Features
 
 * Custom files (replace the files inside `www/targets` with your own, or use absolute paths as specified [here](https://github.com/mattrayner/cordova-plugin-vuforia#configxml)).
+* Demos starting, automatically stopping and manually stopping the plugin.
 
 ### Requirements
 
