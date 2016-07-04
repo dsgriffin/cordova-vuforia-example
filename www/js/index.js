@@ -50,7 +50,7 @@ var app = {
 
         // Start Vuforia with no overlay text
         document.getElementById('start-vuforia-with-no-overlay-text').onclick = function () {
-            app.startVuforia(true, undefined, '')
+            app.startVuforia(true, undefined, null)
         };
 
         // Start Vuforia with simple options and try to close it after 5 seconds
