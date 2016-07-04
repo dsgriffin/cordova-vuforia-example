@@ -1,0 +1,34 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-android-support-v4": {
+            "PACKAGE_NAME": "io.cordova.vuforiaplugin"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "io.cordova.vuforiaplugin"
+        },
+        "cordova-plugin-media": {
+            "PACKAGE_NAME": "io.cordova.vuforiaplugin"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "io.cordova.vuforiaplugin"
+        },
+        "cordova-plugin-vuforia": {
+            "PACKAGE_NAME": "io.cordova.vuforiaplugin"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "io.cordova.vuforiaplugin"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "io.cordova.vuforiaplugin"
+        }
+    }
+}
