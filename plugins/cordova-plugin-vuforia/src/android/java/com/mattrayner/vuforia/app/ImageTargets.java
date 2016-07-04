@@ -33,10 +33,12 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.Toast;
 //import android.R;
 //import com.example.hello.R;
@@ -107,6 +109,15 @@ public class ImageTargets extends Activity implements ApplicationControl
     // Overlay message string
     String mOverlayMessage;
 
+    // Display button boolean
+    Boolean mDisplayCloseButton;
+
+    // Display devices icon image
+    Boolean mDisplayDevicesIcon;
+
+    // Stop the activity
+    Boolean mAutostopOnImageFound;
+
     // Vuforia license key
     String mLicenseKey;
 
@@ -117,7 +128,14 @@ public class ImageTargets extends Activity implements ApplicationControl
             String receivedAction = intent.getExtras().getString(VuforiaPlugin.PLUGIN_ACTION);
 
             if (receivedAction.equals(VuforiaPlugin.DISMISS_ACTION)) {
-                onBackPressed();
+                doFinish();
+            }else if(receivedAction.equals(VuforiaPlugin.PAUSE_ACTION)){
+                doStopTrackers();
+            }else if(receivedAction.equals(VuforiaPlugin.RESUME_ACTION)){
+                doStartTrackers();
+            }else if(receivedAction.equals(VuforiaPlugin.UPDATE_TARGETS_ACTION)){
+                String targets = intent.getStringExtra("ACTION_DATA");
+                doUpdateTargets(targets);
             }
         }
     }
@@ -151,7 +169,7 @@ public class ImageTargets extends Activity implements ApplicationControl
         } catch(Exception e) {
             Intent mIntent = new Intent();
             mIntent.putExtra("name", "VUFORIA ERROR");
-            setResult(6, mIntent);
+            setResult(VuforiaPlugin.ERROR_RESULT, mIntent);
             finish();
         }
 
@@ -159,6 +177,10 @@ public class ImageTargets extends Activity implements ApplicationControl
         String target_file = intent.getStringExtra("IMAGE_TARGET_FILE");
         mTargets = intent.getStringExtra("IMAGE_TARGETS");
         mOverlayMessage = intent.getStringExtra("OVERLAY_TEXT");
+        mDisplayCloseButton = intent.getBooleanExtra("DISPLAY_CLOSE_BUTTON", true);
+        mDisplayDevicesIcon = intent.getBooleanExtra("DISPLAY_DEVICES_ICON", true);
+        mAutostopOnImageFound = intent.getBooleanExtra("STOP_AFTER_IMAGE_FOUND", true);
+
         startLoadingAnimation();
 
         Log.d(LOGTAG, "MRAY :: VUFORIA RECEIVED FILE: " + target_file);
@@ -378,23 +400,30 @@ public class ImageTargets extends Activity implements ApplicationControl
             .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
 
         // Gets a reference to the overlay text
-        TextView overlayText = (TextView) mUILayout.findViewById(resources.getIdentifier("overlay_message", "id", package_name));
+        TextView overlayText = (TextView) mUILayout.findViewById(resources.getIdentifier("overlay_message_top", "id", package_name));
 
-        if(mOverlayMessage == null){
-            Log.d(LOGTAG, "Hiding the Overlay TextView and the ImageView");
-            overlayText.setVisibility(View.GONE);
-            ImageView overlayImage = (ImageView) mUILayout.findViewById(resources.getIdentifier("imageView", "id", package_name));
-            overlayImage.setVisibility(View.GONE);
-        }else{
-            Log.d(LOGTAG, "Overlay Text: "+mOverlayMessage);
+        Log.d(LOGTAG, "Overlay Text: "+mOverlayMessage);
 
-            // Updates the overlay message with the text passed-in
-            overlayText.setText( mOverlayMessage );
+        // Hide the close button if needed
+        Button closeButton = (Button) mUILayout.findViewById(resources.getIdentifier("close_button_top", "id", package_name));
+        if(!mDisplayCloseButton)
+            closeButton.setVisibility(View.GONE);
+
+        ImageView devicesIconImage = (ImageView) mUILayout.findViewById(resources.getIdentifier("devices_icon_top", "id", package_name));
+
+        if(!mDisplayDevicesIcon)
+            devicesIconImage.setVisibility(View.GONE);
+        // Updates the overlay message with the text passed-in
+        overlayText.setText(mOverlayMessage);
+
+        // If the message doesn't exist/is empty, set the black overlay container to be nearly transparent.
+        LinearLayout overlayContainer = (LinearLayout) mUILayout.findViewById(resources.getIdentifier("layout_top", "id", package_name));
+        if(overlayText == null || overlayText.getText().equals("")) {
+            overlayContainer.setBackgroundColor(Color.parseColor("#00000000"));
         }
-        // Adds the inflated layout to the view
-        addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT,
-            LayoutParams.MATCH_PARENT));
 
+        // Adds the inflated layout to the view
+        addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
 
@@ -693,7 +722,43 @@ public class ImageTargets extends Activity implements ApplicationControl
     public void onBackPressed() {
         Intent mIntent = new Intent();
         mIntent.putExtra("name", "CLOSED");
-        setResult(6, mIntent);
+        setResult(VuforiaPlugin.MANUAL_CLOSE_RESULT, mIntent);
         super.onBackPressed();
+    }
+
+    public void doFinish() {
+        Intent mIntent = new Intent();
+        setResult(VuforiaPlugin.NO_RESULT, mIntent);
+        super.onBackPressed();
+    }
+
+    public void handleCloseButton(View view){
+        onBackPressed();
+    }
+
+    public void imageFound(String imageName) {
+        Context context =  this.getApplicationContext();
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("name", imageName);
+
+        this.setResult(0, resultIntent);
+
+        doStopTrackers();
+
+        Log.d(LOGTAG, "mAuto Stop On Image Found: " + mAutostopOnImageFound);
+
+        if(mAutostopOnImageFound) {
+            this.finish();
+        } else {
+            Log.d(LOGTAG, "Sending repeat callback");
+
+            VuforiaPlugin.sendImageFoundUpdate(imageName);
+        }
+    }
+
+    public void doUpdateTargets(String targets) {
+        mTargets = targets;
+
+        mRenderer.updateTargetStrings(mTargets);
     }
 }
