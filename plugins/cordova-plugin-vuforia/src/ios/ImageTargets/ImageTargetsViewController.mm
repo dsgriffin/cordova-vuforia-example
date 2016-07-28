@@ -56,7 +56,6 @@
         self.title = @"Image Targets";
 
         // get whether the user opted to show the device icon
-        bool showDevicesIcon = [[self.overlayOptions objectForKey:@"showDevicesIcon"] integerValue];
 
         // Create the EAGLView with the screen dimensions
         CGRect screenBounds = [[UIScreen mainScreen] bounds];
@@ -89,8 +88,20 @@
          selector:@selector(resumeAR)
          name:UIApplicationDidBecomeActiveNotification
          object:nil];
+         [self loadOverlay];
+    }
+    return self;
+}
+
+-(void) loadOverlay {
+    if(!vapp.cameraIsStarted){
+        [self performSelector:@selector(loadOverlay) withObject:nil afterDelay:0.1];
+    }else{
 
         // set up the overlay back bar
+
+        bool showDevicesIcon = [[self.overlayOptions objectForKey:@"showDevicesIcon"] integerValue];
+
         UIView *vuforiaBarView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 75)];
         vuforiaBarView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
         vuforiaBarView.tag = 8;
@@ -162,7 +173,6 @@
             }
         }
     }
-    return self;
 }
 
 -(void)buttonPressed {
@@ -174,10 +184,6 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CloseRequest" object:self userInfo:userInfo];
 }
 
-
-- (BOOL)shouldAutorotate {
-    return NO;
-}
 
 - (void) pauseAR {
     NSError * error = nil;
@@ -618,7 +624,7 @@
         if(!self.delaying) {
             self.delaying = true;
 
-            [self performSelector:@selector(startVuforia) withObject:nil afterDelay:1];
+
         }
 
         CGRect mainBounds = [[UIScreen mainScreen] bounds];
@@ -731,6 +737,19 @@
     [self performSelector:@selector(test) withObject:nil afterDelay:.5];
 }
 
+- (BOOL)shouldAutorotate {
+    return [[self presentingViewController] shouldAutorotate];
+}
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    return [[self presentingViewController] supportedInterfaceOrientations];
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return [[self presentingViewController] preferredInterfaceOrientationForPresentation];
+}
+
 -(void)test
 {
     self.delaying = false;
@@ -740,5 +759,11 @@
 
 - (BOOL)prefersStatusBarHidden {
     return YES;
+}
+
+-(bool) doUpdateTargets:(NSArray *)targets {
+    self.imageTargetNames = targets;
+
+    return TRUE;
 }
 @end
