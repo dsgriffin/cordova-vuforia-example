@@ -50,7 +50,7 @@
     "cordova-plugin-vuforia": {
         "source": {
             "type": "registry",
-            "id": "cordova-plugin-vuforia@3.0.1"
+            "id": "cordova-plugin-vuforia@3.0.2"
         },
         "is_top_level": true,
         "variables": {}
