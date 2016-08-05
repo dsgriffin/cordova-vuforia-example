@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-plugin-vuforia-sdk"
+        version="1.0.0">
+    <name>Vuforia SDK</name>
+    <description>Cordova Vuforia SDK Plugin</description>
+    <license>MIT</license>
+    <keywords>cordova,vuforia,sdk</keywords>
+    <repo>git@github.com:mattrayner/cordova-plugin-vuforia-sdk.git</repo>
+    <issue>https://github.com/mattrayner/cordova-plugin-vuforia-sdk/issues</issue>
+
+    <author>Matthew Rayner</author>
+
+    <info>
+        Cordova Vuforia SDK Plugin version 1.0.0, Copyright (C) 2016 Matthew Rayner
+        Cordova Vuforia SDK Plugin comes with ABSOLUTELY NO WARRANTY; see the
+        LICENSE file for more information.
+        This is free software, and you are welcome to redistribute it
+        under certain conditions; see the LICENSE file for more information.
+    </info>
+
+    <!-- android -->
+    <platform name="android">
+        <!-- Libraries -->
+        <source-file src="src/vuforia/jniLibs/armeabi/libVuforia.so" target-dir="libs/armeabi-v7a" />
+        <source-file src="src/vuforia/Vuforia.jar" target-dir="libs" />
+
+        <!-- Add our permissions to the Android Manifest -->
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-feature android:glEsVersion="0x00020000" />
+            <uses-feature android:name="android.hardware.camera" />
+
+            <uses-permission android:name="android.permission.CAMERA" />
+
+            <uses-permission android:name="android.permission.INTERNET"/>
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+        </config-file>
+    </platform>
+
+    <!-- ios -->
+    <platform name="ios">
+        <hook type="after_plugin_install" src="hooks/AfterPluginInstall.js" />
+        <hook type="before_plugin_uninstall" src="hooks/BeforePluginUninstall.js" />
+
+        <framework src="AVFoundation.framework" weak="true" />
+        <framework src="CoreGraphics.framework" weak="true" />
+        <framework src="CoreMedia.framework" weak="true" />
+        <framework src="CoreMotion.framework" weak="true" />
+        <framework src="CoreVideo.framework" weak="true" />
+        <framework src="Foundation.framework" weak="true" />
+        <framework src="OpenGLES.framework" weak="true" />
+        <framework src="QuartzCore.framework" weak="true" />
+        <framework src="Security.framework" weak="true" />
+        <framework src="SystemConfiguration.framework" weak="true" />
+        <framework src="UIKit.framework" weak="true" />
+
+        <source-file src="src/vuforia/lib/arm/libVuforia.a" target-dir="libs" framework="true" />
+    </platform>
+</plugin>

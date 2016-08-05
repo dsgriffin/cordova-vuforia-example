@@ -47,10 +47,18 @@
         "is_top_level": false,
         "variables": {}
     },
+    "cordova-plugin-vuforia-sdk": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-vuforia-sdk"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
     "cordova-plugin-vuforia": {
         "source": {
             "type": "registry",
-            "id": "cordova-plugin-vuforia@3.0.2"
+            "id": "cordova-plugin-vuforia@3.2.0"
         },
         "is_top_level": true,
         "variables": {}

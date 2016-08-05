@@ -1,0 +1,6 @@
+{
+  "headerPaths": [
+    "\"../../plugins/cordova-plugin-vuforia-sdk/src/vuforia/include\"",
+    "\"$(OBJROOT)/UninstalledProducts/$(PLATFORM_NAME)/include\""
+  ]
+}

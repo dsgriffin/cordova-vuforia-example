@@ -1,0 +1,29 @@
+{
+  "name": "cordova-plugin-vuforia-sdk",
+  "version": "1.0.0",
+  "description": "A Cordova wrapper for the Vuforia SDK",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattrayner/cordova-plugin-vuforia-sdk.git"
+  },
+  "cordova": {
+    "id": "cordova-plugin-vuforia-sdk",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "keywords": [
+    "cordova",
+    "vuforia",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "author": "Matt Rayner",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mattrayner/cordova-plugin-vuforia-sdk/issues"
+  },
+  "homepage": "https://github.com/mattrayner/cordova-plugin-vuforia-sdk#readme"
+}
