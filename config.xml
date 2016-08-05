@@ -27,4 +27,8 @@
         <resource-file src="targets/StonesAndChips.xml" />
         <resource-file src="targets/StonesAndChips.dat" />
     </platform>
+
+    <feature name="Device">
+        <param name="ios-package" value="CDVDevice" />
+    </feature>
 </widget>
