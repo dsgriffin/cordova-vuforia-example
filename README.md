@@ -1,4 +1,4 @@
-# Cordova Vuforia Example
+# Cordova Vuforia Example 📷
 
 A simple example Cordova project using [cordova-plugin-vuforia](https://github.com/thisisbd/cordova-plugin-vuforia).
 
@@ -20,8 +20,6 @@ First, clone the repo.
 Next, replace `YOUR_VUFORIA_KEY` in the `startVuforia` function (inside `www/js/index.js`) with your Vuforia key.
 
 Then, make sure your device is properly connected and run either `cordova prepare ios && cordova run ios` or `cordova prepare android && cordova run android`, depending on your device type of course.
-
-:tada:
  
 ## License
 
